@@ -30,7 +30,12 @@
         "./src/payload.config.ts"
       ]
     },
-    "target": "ES2022"
+    "target": "ES2022",
+    "types": [
+      "@cloudflare/workers-types/2023-07-01",
+      "node",
+      "google.maps"
+    ]
   },
   "include": [
     "next-env.d.ts",

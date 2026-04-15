@@ -69,6 +69,13 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    properties: Property;
+    builders: Builder;
+    amenities: Amenity;
+    quotations: Quotation;
+    'expression-of-interest': ExpressionOfInterest;
+    leads: Lead;
+    blogs: Blog;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,13 +85,20 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    properties: PropertiesSelect<false> | PropertiesSelect<true>;
+    builders: BuildersSelect<false> | BuildersSelect<true>;
+    amenities: AmenitiesSelect<false> | AmenitiesSelect<true>;
+    quotations: QuotationsSelect<false> | QuotationsSelect<true>;
+    'expression-of-interest': ExpressionOfInterestSelect<false> | ExpressionOfInterestSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
+    blogs: BlogsSelect<false> | BlogsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -122,7 +136,21 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
+  name?: string | null;
+  phoneNumber?: string | null;
+  city?: string | null;
+  address?: string | null;
+  state?: string | null;
+  interestedIn?: string | null;
+  budgetRange?: {
+    min?: number | null;
+    max?: number | null;
+  };
+  isVerified?: boolean | null;
+  wishlist?: (number | Property)[] | null;
+  lastLoginAt?: string | null;
+  timeJoined?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -144,10 +172,203 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "properties".
+ */
+export interface Property {
+  id: number;
+  title: string;
+  summary?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  legalEntity?: string | null;
+  propertyBoundary?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  possessionStatus?: ('ready' | 'under-construction') | null;
+  propertySize?: number | null;
+  areaInSqmt?: number | null;
+  areaInSqft?: number | null;
+  noOfUnits?: number | null;
+  noOfTowers?: number | null;
+  launchedOn?: string | null;
+  reraCompletionDate?: string | null;
+  targetCompletionDate?: string | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  tagsType?: ('residential' | 'commercial' | 'plot') | null;
+  similarPropertiesID?: (number | Property)[] | null;
+  googlePlaceId?: string | null;
+  location?: {
+    address?: string | null;
+    street?: string | null;
+    city?: string | null;
+    state?: string | null;
+    pincode?: string | null;
+    region?: string | null;
+    lat?: number | null;
+    lng?: number | null;
+  };
+  builder?: (number | null) | Builder;
+  reraId?: string | null;
+  reraLink?: string | null;
+  authorityApprovals?:
+    | {
+        approval?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  authorityLink?:
+    | {
+        link?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  price?: number | null;
+  minPrice?: number | null;
+  maxPrice?: number | null;
+  images?: (number | Media)[] | null;
+  videos?: (number | Media)[] | null;
+  files?: (number | Media)[] | null;
+  approvalFile?: (number | Media)[] | null;
+  projectPlan?: (number | Media)[] | null;
+  blockPlan?: (number | Media)[] | null;
+  brochureLimit?: number | null;
+  amenities?:
+    | {
+        amenity?: (number | null) | Amenity;
+        customName?: string | null;
+        customIcon?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  units?:
+    | {
+        noOfRooms?: number | null;
+        noOfWashrooms?: number | null;
+        noOfBalconies?: number | null;
+        noOfLivingRooms?: number | null;
+        noOfKitchens?: number | null;
+        noOfUnits?: number | null;
+        plotArea?: number | null;
+        superBuiltUpArea?: number | null;
+        coveredArea?: number | null;
+        carpetArea?: number | null;
+        front?:
+          | ('east' | 'west' | 'north' | 'south' | 'north-east' | 'north-west' | 'south-east' | 'south-west')
+          | null;
+        cladbeModelId?: string | null;
+        images?: (number | Media)[] | null;
+        videos?: (number | Media)[] | null;
+        threeDModels?: (number | Media)[] | null;
+        floorPlan?: (number | Media)[] | null;
+        vr?: (number | Media)[] | null;
+        walkthrough?: (number | Media)[] | null;
+        configurations?:
+          | {
+              category?: string | null;
+              type?: string | null;
+              config?:
+                | {
+                    [k: string]: unknown;
+                  }
+                | unknown[]
+                | string
+                | number
+                | boolean
+                | null;
+              icon?: string | null;
+              description?: string | null;
+              tag?: string | null;
+              files?: (number | Media)[] | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  nearby?:
+    | {
+        category?: string | null;
+        places?:
+          | {
+              name?: string | null;
+              googlePlaceId?: string | null;
+              address?: string | null;
+              rating?: number | null;
+              lat?: number | null;
+              lng?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  boost?: {
+    isActive?: boolean | null;
+    priority?: number | null;
+    boostType?: ('featured' | 'sponsored' | 'trending') | null;
+    startDate?: string | null;
+    endDate?: string | null;
+    city?: string | null;
+    region?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "builders".
+ */
+export interface Builder {
+  id: number;
+  legalName: string;
+  bondName?: string | null;
+  email?: string | null;
+  phoneNo?: string | null;
+  whatsAppNo?: string | null;
+  website?: string | null;
+  vintage?: string | null;
+  rating?: number | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  cladbeId?: string | null;
+  files?: (number | Media)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -163,10 +384,189 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "amenities".
+ */
+export interface Amenity {
+  id: number;
+  name: string;
+  icon?: string | null;
+  description?: string | null;
+  image?: (number | null) | Media;
+  video?: (number | null) | Media;
+  isSharedAmenity?: boolean | null;
+  capacity?: number | null;
+  capacityDetails?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  files?: (number | Media)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotations".
+ */
+export interface Quotation {
+  id: number;
+  quotationNumber?: string | null;
+  property?: (number | null) | Property;
+  user?: (number | null) | User;
+  title?: string | null;
+  description?: string | null;
+  type?: ('standard' | 'custom' | 'premium') | null;
+  baseAmount?: number | null;
+  taxAmount?: number | null;
+  discountAmount?: number | null;
+  totalAmount?: number | null;
+  status?: ('pending' | 'accepted' | 'rejected') | null;
+  validFrom?: string | null;
+  validUntil?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expression-of-interest".
+ */
+export interface ExpressionOfInterest {
+  id: number;
+  quotation?: (number | null) | Quotation;
+  status?: ('pending' | 'reviewed' | 'accepted' | 'rejected') | null;
+  priority?: ('low' | 'medium' | 'high') | null;
+  interestedAmount?: number | null;
+  message?: string | null;
+  contactPreference?: ('email' | 'phone' | 'whatsapp') | null;
+  preferredContactTime?: string | null;
+  expectedDecisionDate?: string | null;
+  budgetRange?: {
+    min?: number | null;
+    max?: number | null;
+  };
+  requirements?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  referenceNumber?: string | null;
+  ipAddress?: string | null;
+  followUpDate?: string | null;
+  followUpCount?: number | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  expiresAt?: string | null;
+  isActive?: boolean | null;
+  score?: number | null;
+  convertedAt?: string | null;
+  rejectionReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: number;
+  name?: string | null;
+  companyName?: string | null;
+  email?: string | null;
+  mobileNumber?: string | null;
+  category?: ('general' | 'sales' | 'support' | 'partnership') | null;
+  otherCategory?: string | null;
+  isProcessed?: boolean | null;
+  submittedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Blog posts and news articles shown on the website.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs".
+ */
+export interface Blog {
+  id: number;
+  title: string;
+  /**
+   * URL-friendly identifier, e.g. "why-invest-in-delhi-2025"
+   */
+  slug?: string | null;
+  category?: ('property.new' | 'real-estate' | 'home-buying' | 'investment' | 'interior' | 'legal' | 'both') | null;
+  author?: string | null;
+  publishedDate?: string | null;
+  coverImage?: (number | null) | Media;
+  /**
+   * External image URL (fallback if no uploaded image)
+   */
+  coverImageUrl?: string | null;
+  /**
+   * Short preview text shown in blog cards
+   */
+  summary?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Estimated read time in minutes
+   */
+  readTime?: number | null;
+  tags?:
+    | {
+        tag?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  approval_status?: ('pending' | 'approved' | 'rejected') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +583,48 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'properties';
+        value: number | Property;
+      } | null)
+    | ({
+        relationTo: 'builders';
+        value: number | Builder;
+      } | null)
+    | ({
+        relationTo: 'amenities';
+        value: number | Amenity;
+      } | null)
+    | ({
+        relationTo: 'quotations';
+        value: number | Quotation;
+      } | null)
+    | ({
+        relationTo: 'expression-of-interest';
+        value: number | ExpressionOfInterest;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: number | Lead;
+      } | null)
+    | ({
+        relationTo: 'blogs';
+        value: number | Blog;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +634,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +657,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -240,6 +668,22 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  phoneNumber?: T;
+  city?: T;
+  address?: T;
+  state?: T;
+  interestedIn?: T;
+  budgetRange?:
+    | T
+    | {
+        min?: T;
+        max?: T;
+      };
+  isVerified?: T;
+  wishlist?: T;
+  lastLoginAt?: T;
+  timeJoined?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -274,6 +718,293 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "properties_select".
+ */
+export interface PropertiesSelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  description?: T;
+  legalEntity?: T;
+  propertyBoundary?: T;
+  possessionStatus?: T;
+  propertySize?: T;
+  areaInSqmt?: T;
+  areaInSqft?: T;
+  noOfUnits?: T;
+  noOfTowers?: T;
+  launchedOn?: T;
+  reraCompletionDate?: T;
+  targetCompletionDate?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  tagsType?: T;
+  similarPropertiesID?: T;
+  googlePlaceId?: T;
+  location?:
+    | T
+    | {
+        address?: T;
+        street?: T;
+        city?: T;
+        state?: T;
+        pincode?: T;
+        region?: T;
+        lat?: T;
+        lng?: T;
+      };
+  builder?: T;
+  reraId?: T;
+  reraLink?: T;
+  authorityApprovals?:
+    | T
+    | {
+        approval?: T;
+        id?: T;
+      };
+  authorityLink?:
+    | T
+    | {
+        link?: T;
+        id?: T;
+      };
+  price?: T;
+  minPrice?: T;
+  maxPrice?: T;
+  images?: T;
+  videos?: T;
+  files?: T;
+  approvalFile?: T;
+  projectPlan?: T;
+  blockPlan?: T;
+  brochureLimit?: T;
+  amenities?:
+    | T
+    | {
+        amenity?: T;
+        customName?: T;
+        customIcon?: T;
+        id?: T;
+      };
+  units?:
+    | T
+    | {
+        noOfRooms?: T;
+        noOfWashrooms?: T;
+        noOfBalconies?: T;
+        noOfLivingRooms?: T;
+        noOfKitchens?: T;
+        noOfUnits?: T;
+        plotArea?: T;
+        superBuiltUpArea?: T;
+        coveredArea?: T;
+        carpetArea?: T;
+        front?: T;
+        cladbeModelId?: T;
+        images?: T;
+        videos?: T;
+        threeDModels?: T;
+        floorPlan?: T;
+        vr?: T;
+        walkthrough?: T;
+        configurations?:
+          | T
+          | {
+              category?: T;
+              type?: T;
+              config?: T;
+              icon?: T;
+              description?: T;
+              tag?: T;
+              files?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  nearby?:
+    | T
+    | {
+        category?: T;
+        places?:
+          | T
+          | {
+              name?: T;
+              googlePlaceId?: T;
+              address?: T;
+              rating?: T;
+              lat?: T;
+              lng?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  boost?:
+    | T
+    | {
+        isActive?: T;
+        priority?: T;
+        boostType?: T;
+        startDate?: T;
+        endDate?: T;
+        city?: T;
+        region?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "builders_select".
+ */
+export interface BuildersSelect<T extends boolean = true> {
+  legalName?: T;
+  bondName?: T;
+  email?: T;
+  phoneNo?: T;
+  whatsAppNo?: T;
+  website?: T;
+  vintage?: T;
+  rating?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  cladbeId?: T;
+  files?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "amenities_select".
+ */
+export interface AmenitiesSelect<T extends boolean = true> {
+  name?: T;
+  icon?: T;
+  description?: T;
+  image?: T;
+  video?: T;
+  isSharedAmenity?: T;
+  capacity?: T;
+  capacityDetails?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  files?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotations_select".
+ */
+export interface QuotationsSelect<T extends boolean = true> {
+  quotationNumber?: T;
+  property?: T;
+  user?: T;
+  title?: T;
+  description?: T;
+  type?: T;
+  baseAmount?: T;
+  taxAmount?: T;
+  discountAmount?: T;
+  totalAmount?: T;
+  status?: T;
+  validFrom?: T;
+  validUntil?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "expression-of-interest_select".
+ */
+export interface ExpressionOfInterestSelect<T extends boolean = true> {
+  quotation?: T;
+  status?: T;
+  priority?: T;
+  interestedAmount?: T;
+  message?: T;
+  contactPreference?: T;
+  preferredContactTime?: T;
+  expectedDecisionDate?: T;
+  budgetRange?:
+    | T
+    | {
+        min?: T;
+        max?: T;
+      };
+  requirements?: T;
+  referenceNumber?: T;
+  ipAddress?: T;
+  followUpDate?: T;
+  followUpCount?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  metadata?: T;
+  expiresAt?: T;
+  isActive?: T;
+  score?: T;
+  convertedAt?: T;
+  rejectionReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  name?: T;
+  companyName?: T;
+  email?: T;
+  mobileNumber?: T;
+  category?: T;
+  otherCategory?: T;
+  isProcessed?: T;
+  submittedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blogs_select".
+ */
+export interface BlogsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  author?: T;
+  publishedDate?: T;
+  coverImage?: T;
+  coverImageUrl?: T;
+  summary?: T;
+  content?: T;
+  readTime?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  approval_status?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

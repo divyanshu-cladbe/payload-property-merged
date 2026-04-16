@@ -78,7 +78,7 @@ export default function PropertyWithMapView({
     useResponsiveLayout();
 
   const { displayedItems, hasMore, isLoadingMore, scrollRef } =
-    useInfiniteScroll(filteredProperties, {
+    useInfiniteScroll(properties, {
       initialItemsPerPage: 4,
       threshold: 0.7,
       loadMoreDelay: 200,
@@ -173,6 +173,7 @@ export default function PropertyWithMapView({
             isSearchExpanded={isSearchExpanded}
             onSearchExpandToggle={setIsSearchExpanded}
             onUserLocationUpdate={onUserLocationUpdate}
+            totalResults={properties.length}
           />
 
           {/* Region Filters - inside sticky header */}

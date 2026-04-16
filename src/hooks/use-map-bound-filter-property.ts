@@ -76,6 +76,7 @@ export function useMapBoundFilterProperty(properties: Property[]) {
 
     return {
         mapBasedFilteredProperty,
-        setMapBounds
+        setMapBounds,
+        isFiltering: !!mapBounds
     };
 }

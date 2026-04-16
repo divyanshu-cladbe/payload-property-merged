@@ -21,12 +21,14 @@ interface PropertiesPageHeaderProps {
   isSearchExpanded: boolean;
   onSearchExpandToggle: (expanded: boolean) => void;
   onUserLocationUpdate?: (enabled: boolean, userLocation: { lat: number; lng: number } | null) => void;
+  totalResults?: number;
 }
 
 export default function PropertiesPageHeader({
   isSearchExpanded,
   onSearchExpandToggle,
   onUserLocationUpdate,
+  totalResults,
 }: PropertiesPageHeaderProps) {
   // Get all data from context
   const {
@@ -83,7 +85,7 @@ export default function PropertiesPageHeader({
             <p className="text-sm text-gray-600 mt-1">
               {isLoading
                 ? "Loading properties..."
-                : `Showing ${allProperties.length} Results`}
+                : `Showing ${totalResults !== undefined ? totalResults : allProperties.length} Results`}
             </p>
           </div>
 

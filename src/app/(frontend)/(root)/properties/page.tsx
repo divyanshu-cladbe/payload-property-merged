@@ -54,9 +54,9 @@ export default function PropertiesPage() {
   //   areasOfInterest
   // );
 
-  const filteredProperties = properties;
+  const { mapBasedFilteredProperty, setMapBounds, isFiltering } = useMapBoundFilterProperty(properties);
 
-  const { mapBasedFilteredProperty, setMapBounds } = useMapBoundFilterProperty(properties);
+  const displayProperties = isFiltering ? mapBasedFilteredProperty : properties;
 
   // Import centralized map configuration
   const { INDIA_CENTER, INDIA_BOUNDS } = MAP_CONFIG;
@@ -153,7 +153,7 @@ export default function PropertiesPage() {
           currentBound={{ INDIA_BOUNDS, INDIA_CENTER }}
           getResponsiveValue={getResponsiveValue}
           setMapBounds={setMapBounds}
-          filteredProperties={filteredProperties}
+          filteredProperties={displayProperties}
         />
       </div>
     </PropertiesPageProvider>
